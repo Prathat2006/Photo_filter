@@ -58,9 +58,9 @@ class ImageProcessor:
 
 # Main function
 def main():
-    input_folder = 'demo_input'
-    output_folder = 'demo_output'
-    input_face_image = "face.jpg"#Add the Path of image  that contains face which you want to filter 
+    input_folder = ''
+    output_folder = 'D:\project\image\Photo_filter\demo_input'
+    input_face_image = "D:\\project\\image\\Photo_filter\\face\\NarendraModi61.jpg"#Add the Path of image  that contains face which you want to filter 
     
     processor = ImageProcessor(input_folder, output_folder)
     
