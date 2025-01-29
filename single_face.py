@@ -6,14 +6,26 @@ from pathlib import Path
 from insightface.app import FaceAnalysis
 
 class ImageProcessor:
-    def __init__(self, input_folder, output_folder, model_name="buffalo_l", providers=["CPUExecutionProvider"], det_size=(640, 640)):
+    def __init__(self, input_folder, output_folder, model_name="buffalo_l", det_size=(640, 640), use_gpu=True):
         self.input_folder = input_folder
         self.output_folder = output_folder
         Path(output_folder).mkdir(parents=True, exist_ok=True)
         
-        self.app = FaceAnalysis(name=model_name, providers=providers)
-        self.app.prepare(ctx_id=0, det_size=det_size)
-    
+        # Configure providers based on GPU availability
+        if use_gpu:
+            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        else:
+            providers = ['CPUExecutionProvider']
+            
+        try:
+            self.app = FaceAnalysis(name=model_name, providers=providers)
+            self.app.prepare(ctx_id=0, det_size=det_size)
+            print(f"Using providers: {providers}")
+        except Exception as e:
+            print(f"Error initializing with GPU. Falling back to CPU. Error: {str(e)}")
+            self.app = FaceAnalysis(name=model_name, providers=['CPUExecutionProvider'])
+            self.app.prepare(ctx_id=0, det_size=det_size)
+
     def get_face_embedding(self, image_path):
         image = cv2.imread(image_path)
         if image is None:
@@ -46,9 +58,9 @@ class ImageProcessor:
 
 # Main function
 def main():
-    input_folder = '\demo_input'
-    output_folder = '\demo_output'
-    input_face_image = "face_image" #Add the Path of image  that contains face which you want to filter 
+    input_folder = 'demo_input'
+    output_folder = 'demo_output'
+    input_face_image = "face.jpg"#Add the Path of image  that contains face which you want to filter 
     
     processor = ImageProcessor(input_folder, output_folder)
     

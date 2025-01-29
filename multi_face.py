@@ -6,13 +6,26 @@ from pathlib import Path
 from insightface.app import FaceAnalysis
 
 class ImageProcessor:
-    def __init__(self, input_folder, output_folder, model_name="buffalo_l", providers=["CPUExecutionProvider"], det_size=(640, 640)):
+    def __init__(self, input_folder, output_folder, model_name="buffalo_l", det_size=(640, 640), use_gpu=True):
         self.input_folder = input_folder
         self.output_folder = output_folder
         Path(output_folder).mkdir(parents=True, exist_ok=True)
         
-        self.app = FaceAnalysis(name=model_name, providers=providers)
-        self.app.prepare(ctx_id=0, det_size=det_size)
+        # Configure providers based on GPU availability
+        if use_gpu:
+            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        else:
+            providers = ['CPUExecutionProvider']
+            
+        try:
+            self.app = FaceAnalysis(name=model_name, providers=providers)
+            self.app.prepare(ctx_id=0, det_size=det_size)
+            print(f"Using providers: {providers}")
+        except Exception as e:
+            print(f"Error initializing with GPU. Falling back to CPU. Error: {str(e)}")
+            self.app = FaceAnalysis(name=model_name, providers=['CPUExecutionProvider'])
+            self.app.prepare(ctx_id=0, det_size=det_size)
+
     
     def get_face_embeddings(self, image_path):
         """Returns all face embeddings found in an image"""
@@ -63,10 +76,10 @@ class ImageProcessor:
                 print(f"Match found: Both persons detected in {filename}")
 
 def main():
-    input_folder = 'D:\\PHOTOS\\Niraj\\Camera'
-    output_folder = 'D:\\project\\image\\Photo_filter\\demo_output\\demo_output2'
-    person1_image = "D:\\project\\image\\Photo_filter\\face\\1708788747728-8ebb6b88-49c1-4213-8bbe-87a0e5186ffa1.jpg"
-    person2_image = "D:\\project\\image\\Photo_filter\\face\\IMG20240511154328.jpg"
+    input_folder = 'demo_input'
+    output_folder = 'demo_output'
+    person1_image = "face-1.jpg"   #Add the Path of image  that contains face which you want to filter 
+    person2_image = "face-2.jpg"   #Add the Path of image  that contains face which you want to filter 
     
     processor = ImageProcessor(input_folder, output_folder)
     

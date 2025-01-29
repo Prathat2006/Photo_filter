@@ -12,6 +12,7 @@ A Python-based tool that uses facial recognition to filter and organize images b
 - Support for both single and dual-person face matching
 - Processes entire folders of images
 - Preserves original images while copying matches to output directory
+- Read 2000 Images in just 6 minutes (on Gpu) and 20 minutes (on CPU)
 
 ## Requirements
 
@@ -19,13 +20,15 @@ A Python-based tool that uses facial recognition to filter and organize images b
 opencv-python
 numpy
 insightface
+onnxruntime-gpu #for Gpu  
+onnxruntime # for Cpu
 ```
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Prathat2006/Photo-filter.git
+git clone https://github.com/Prathat2006/Photo_filter.git
 ```
 
 2. Install required packages:
