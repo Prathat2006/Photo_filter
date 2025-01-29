@@ -73,6 +73,7 @@ person2_image = 'path/to/person2/face.jpg'
 - Adjust the `threshold` parameter in `process_images()` to control match strictness
 - Modify `det_size` in `ImageProcessor` initialization for different detection sizes
 - Choose between CPU and GPU providers based on your hardware
+(defalut is cpu if want to use Gpu uninstall onnxruntime and install onnxruntime-gpu)
 
 ## Contributing
 
