@@ -1,0 +1,3 @@
+OpenCV-python
+NumPy
+InsightFace
